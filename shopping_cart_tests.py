@@ -48,3 +48,12 @@ cart = Cart()
 [cart.add_item("Grill") for x in range(2)]
 cart.apply_discount(DEFAULT_DISCOUNT)
 print("Total should be 540:", cart.get_total_order_amount())
+
+# Test record events
+
+cart = None
+cart = Cart()
+[cart.add_item("Microwave") for x in range(2)]
+cart.remove_item("Microwave")
+cart.reset_cart()
+print("Should have 4 events:", cart.events)

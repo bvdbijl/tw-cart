@@ -1,3 +1,5 @@
+from utils import record_event
+
 # Create some mock items to put in the shopping cart
 STOCK_KEEPING_UNITS = {
     "Oven": {
@@ -33,8 +35,10 @@ class Cart:
         """
         self.items = {}
         self.discount = None
+        self.events = []
     
     # @record_event # check if self.items changed after calling the wrapped method
+    @record_event
     def add_item(self, item_id):
         # item_id is a product id
         # check if item already in cart and doesn't exceed 999
@@ -46,6 +50,7 @@ class Cart:
         else:
             self.items[item_id] = {"amount": 1}
 
+    @record_event
     def remove_item(self, item_id):
         # Reduces the items' amount by one if it's already in the Cart
         # Removes completely if amount is zero
@@ -54,7 +59,7 @@ class Cart:
                 self.items[item_id]["amount"] -= 1
             else:
                 del self.items[item_id]
-
+    #@recorde_event
     # def set_item_amount(self, amount):
         # Sets amount of item in cart to amount (>= 1 < 999)
 
@@ -67,6 +72,7 @@ class Cart:
             item_list.append(item)
         return item_list
 
+    @record_event
     def reset_cart(self):
         self.items = {}
 
