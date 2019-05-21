@@ -1,18 +1,19 @@
 # Create some mock items to put in the shopping cart
-stock_keeping_units = {
+STOCK_KEEPING_UNITS = {
     "Oven": {
         "display_name": "Oven",
-        "Price": 150.00,
+        "price": 150.00,
     },
     "Microwave": {
         "display_name": "Microwave",
-        "Price": 100.00
+        "price": 100.00
     },
     "Grill": {
         "display_name": "Grill",
-        "Price": 75.00
+        "price": 75.00
     }
 }
+DEFAULT_DISCOUNT = 0.10
 
 # Create a Cart class to keep track of items in it and perform actions on them
 class Cart:
@@ -31,6 +32,7 @@ class Cart:
 
         """
         self.items = {}
+        self.discount = None
     
     # @record_event # check if self.items changed after calling the wrapped method
     def add_item(self, item_id):
@@ -60,7 +62,7 @@ class Cart:
         # Returns a list of items with their quantities
         item_list = []
         for item_id, value in self.items.items():
-            item = stock_keeping_units[item_id]
+            item = STOCK_KEEPING_UNITS[item_id]
             item["amount"] = value["amount"]
             item_list.append(item)
         return item_list
@@ -68,34 +70,12 @@ class Cart:
     def reset_cart(self):
         self.items = {}
 
-# Test add 2 of the same item
-cart = None
-cart = Cart()
-cart.add_item("Oven")
-cart.add_item("Oven")
-print("Should be 2 Ovens:", cart.get_items())
+    def apply_discount(self, discount):
+        self.discount = discount
 
-# Test fail if item amount is 999 and you try to add 1
-
-# Test remove item from 1 to 0
-cart = None
-cart = Cart()
-cart.add_item("Oven")
-cart.remove_item("Oven")
-print("Should be empty Cart:", cart.get_items())
-
-# Test remove item from 3 to 2
-cart = None
-cart = Cart()
-[cart.add_item("Oven") for x in range(3)]
-cart.remove_item("Oven")
-print("Should be 2 Ovens:", cart.get_items())
-
-# Test reset cart
-cart = None
-cart = Cart()
-[cart.add_item("Oven") for x in range(3)]
-[cart.add_item("Grill") for x in range(2)]
-print("Should be 3 Ovens and 2 Grills:", cart.get_items())
-cart.reset_cart()
-print("Should be empty:" ,cart.get_items())
+    def get_total_order_amount(self):
+        # loop over self.items and calculate total
+        total = sum([i["price"] * i["amount"] for i in self.get_items()])
+        if self.discount is not None:
+            total = total - self.discount * total
+        return total
