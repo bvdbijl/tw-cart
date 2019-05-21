@@ -44,19 +44,58 @@ class Cart:
         else:
             self.items[item_id] = {"amount": 1}
 
+    def remove_item(self, item_id):
+        # Reduces the items' amount by one if it's already in the Cart
+        # Removes completely if amount is zero
+        if item_id in self.items:
+            if self.items[item_id]["amount"] > 1:
+                self.items[item_id]["amount"] -= 1
+            else:
+                del self.items[item_id]
+
+    # def set_item_amount(self, amount):
+        # Sets amount of item in cart to amount (>= 1 < 999)
+
     def get_items(self):
         # Returns a list of items with their quantities
         item_list = []
-        for key, v in self.items.items():
-            i = stock_keeping_units[key]
-            i["amount"] = v["amount"]
-            item_list.append(i)
+        for item_id, value in self.items.items():
+            item = stock_keeping_units[item_id]
+            item["amount"] = value["amount"]
+            item_list.append(item)
         return item_list
 
-cart = Cart()
-cart.add_item("Oven")
-cart.add_item("Oven")
-print(cart.get_items())
+    def reset_cart(self):
+        self.items = {}
+
+# Test add 2 of the same item
 cart = None
 cart = Cart()
-print(cart.items)
+cart.add_item("Oven")
+cart.add_item("Oven")
+print("Should be 2 Ovens:", cart.get_items())
+
+# Test fail if item amount is 999 and you try to add 1
+
+# Test remove item from 1 to 0
+cart = None
+cart = Cart()
+cart.add_item("Oven")
+cart.remove_item("Oven")
+print("Should be empty Cart:", cart.get_items())
+
+# Test remove item from 3 to 2
+cart = None
+cart = Cart()
+[cart.add_item("Oven") for x in range(3)]
+cart.remove_item("Oven")
+print("Should be 2 Ovens:", cart.get_items())
+
+# Test reset cart
+cart = None
+cart = Cart()
+[cart.add_item("Oven") for x in range(3)]
+[cart.add_item("Grill") for x in range(2)]
+print("Should be 3 Ovens and 2 Grills:", cart.get_items())
+cart.reset_cart()
+print("Should be empty:" ,cart.get_items())
