@@ -17,19 +17,15 @@ STOCK_KEEPING_UNITS = {
 }
 DEFAULT_DISCOUNT = 0.10
 
-# Create a Cart class to keep track of items in it and perform actions on them
+# Create a Cart class to keep track of current items in the cart and perform actions on it
 class Cart:
 
     def __init__(self):
         """
         Initiate cart with a dictionary to put references to the items in
         ex. self.items = {
-            "Oven": {
-                "amount": 2
-                }, 
-            "Grill": {
-                "amount": 1
-                }
+            "Oven": {"amount": 2}, 
+            "Grill": {"amount": 1}
             }
 
         """
@@ -37,16 +33,15 @@ class Cart:
         self.discount = None
         self.events = []
     
-    # @record_event # check if self.items changed after calling the wrapped method
     @record_event
     def add_item(self, item_id):
-        # item_id is a product id
-        # check if item already in cart and doesn't exceed 999
+        # Adds the item to the cart if qunatity is below 999
+
         if item_id in self.items:
             if self.items[item_id]["amount"] < 999:
                 self.items[item_id]["amount"] += 1
             else:
-                print("Can't have more than 999 of the same item")
+                raise Exception("Can't have more than 999 of the same item")
         else:
             self.items[item_id] = {"amount": 1}
 
@@ -54,17 +49,20 @@ class Cart:
     def remove_item(self, item_id):
         # Reduces the items' amount by one if it's already in the Cart
         # Removes completely if amount is zero
+
         if item_id in self.items:
             if self.items[item_id]["amount"] > 1:
                 self.items[item_id]["amount"] -= 1
             else:
                 del self.items[item_id]
-    #@recorde_event
+
+    # @record_event
     # def set_item_amount(self, amount):
         # Sets amount of item in cart to amount (>= 1 < 999)
 
     def get_items(self):
-        # Returns a list of items with their quantities
+        # Returns a list of items with their quantities and other data
+
         item_list = []
         for item_id, value in self.items.items():
             item = STOCK_KEEPING_UNITS[item_id]
@@ -80,7 +78,6 @@ class Cart:
         self.discount = discount
 
     def get_total_order_amount(self):
-        # loop over self.items and calculate total
         total = sum([i["price"] * i["amount"] for i in self.get_items()])
         if self.discount is not None:
             total = total - self.discount * total

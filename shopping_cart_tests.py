@@ -8,7 +8,15 @@ cart.add_item("Oven")
 cart.add_item("Oven")
 print("Should be 2 Ovens:", cart.get_items())
 
-# Test fail if item amount is 999 and you try to add 1
+# Test raise Exception if item amount is 999 and you try to add 1
+cart = None
+cart = Cart()
+[cart.add_item("Oven") for x in range(999)]
+try:
+    cart.add_item("Oven")
+except Exception as e:
+    print(e)
+
 
 # Test remove item from 1 to 0
 cart = None
